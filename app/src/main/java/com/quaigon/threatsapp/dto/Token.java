@@ -1,4 +1,4 @@
-package com.quaigon.threatsapp.pojo;
+package com.quaigon.threatsapp.dto;
 
 /**
  * Created by Kamil on 12.03.2016.

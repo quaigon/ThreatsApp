@@ -1,12 +1,12 @@
-package com.quaigon.threatsapp.pojo;
+package com.quaigon.threatsapp.dto;
 
 /**
  * Created by Kamil on 12.03.2016.
  */
 public class Status {
-    private String Status;
+    private String status;
 
     public String getStatus() {
-        return Status;
+        return status;
     }
 }

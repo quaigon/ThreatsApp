@@ -1,11 +1,15 @@
 package com.quaigon.threatsapp.connection;
 
-import com.quaigon.threatsapp.pojo.Status;
-import com.quaigon.threatsapp.pojo.Token;
+import com.quaigon.threatsapp.dto.Status;
+import com.quaigon.threatsapp.dto.Threat;
+import com.quaigon.threatsapp.dto.Token;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 /**
@@ -23,4 +27,6 @@ public interface ConnectionService {
                           @Field("coordinates") String coords,
                           @Field("token") String token);
 
+    @GET("/TrafficThreat/rest/getThreats/")
+    Call<List<Threat>> getThreats ();
 }

@@ -10,20 +10,21 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.LogActivity">
+        <activity android:name=".ui.LogActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.MenuActivity" />
+        <activity android:name=".ui.MenuActivity" />
 
         <meta-data
             android:name="roboguice.modules"
-            android:value="com.quaigon.threatsapp.configuration.MainModule" />
+            android:value="com.quaigon.threatsapp.MainModule" />
 
-        <activity android:name=".activities.AddThreatActivity"></activity>
+        <activity android:name=".ui.AddThreatActivity" />
+        <activity android:name=".ui.ThreatsListActivity"></activity>
     </application>
 
 </manifest>

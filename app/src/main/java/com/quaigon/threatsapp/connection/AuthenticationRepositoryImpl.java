@@ -3,7 +3,7 @@ package com.quaigon.threatsapp.connection;
 import android.content.SharedPreferences;
 
 import com.google.inject.Inject;
-import com.quaigon.threatsapp.pojo.Token;
+import com.quaigon.threatsapp.dto.Token;
 
 /**
  * Created by Kamil on 12.03.2016.

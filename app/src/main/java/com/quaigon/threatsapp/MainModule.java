@@ -1,4 +1,4 @@
-package com.quaigon.threatsapp.configuration;
+package com.quaigon.threatsapp;
 
 import com.google.inject.AbstractModule;
 import com.quaigon.threatsapp.connection.AuthenticationRepository;

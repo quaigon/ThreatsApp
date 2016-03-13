@@ -1,4 +1,4 @@
-package com.quaigon.threatsapp.activities;
+package com.quaigon.threatsapp.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +12,7 @@ import com.quaigon.threatsapp.R;
 import com.quaigon.threatsapp.connection.AuthenticationRepository;
 import com.quaigon.threatsapp.connection.ConnectionService;
 import com.quaigon.threatsapp.connection.ServiceGenerator;
-import com.quaigon.threatsapp.pojo.Token;
+import com.quaigon.threatsapp.dto.Token;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

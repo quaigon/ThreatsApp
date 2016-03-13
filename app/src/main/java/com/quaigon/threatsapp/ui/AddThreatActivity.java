@@ -1,4 +1,4 @@
-package com.quaigon.threatsapp.activities;
+package com.quaigon.threatsapp.ui;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -13,7 +13,7 @@ import com.quaigon.threatsapp.R;
 import com.quaigon.threatsapp.connection.AuthenticationRepository;
 import com.quaigon.threatsapp.connection.ConnectionService;
 import com.quaigon.threatsapp.connection.ServiceGenerator;
-import com.quaigon.threatsapp.pojo.Status;
+import com.quaigon.threatsapp.dto.Status;
 
 import retrofit2.Call;
 import roboguice.activity.RoboActivity;

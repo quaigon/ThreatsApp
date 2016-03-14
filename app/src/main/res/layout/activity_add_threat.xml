@@ -14,15 +14,18 @@
     <EditText
         android:id="@+id/typeEditText"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:hint="Threat type"/>
     <EditText
         android:id="@+id/descriptionEditText"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:hint="Threat description"/>
     <EditText
         android:id="@+id/coordsEditText"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:hint="Threat coordinates"/>
 
     <Button
         android:id="@+id/addButton"

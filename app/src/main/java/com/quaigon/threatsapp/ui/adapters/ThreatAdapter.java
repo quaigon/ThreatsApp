@@ -62,7 +62,7 @@ public class ThreatAdapter extends BaseAdapter {
         Threat threat = (Threat) getItem(position);
         viewHolder.typeTextView.setText(threat.getType().getThreatType());
         viewHolder.descriptionTextView.setText(threat.getDescription());
-        viewHolder.coordsTextView.setText(threat.getCoordinates().getHorizontal() + threat.getCoordinates().getVertical());
+        viewHolder.coordsTextView.setText("Horizontal: " + threat.getCoordinates().getHorizontal() + " Vertical: " + threat.getCoordinates().getVertical());
 
         return view;
     }

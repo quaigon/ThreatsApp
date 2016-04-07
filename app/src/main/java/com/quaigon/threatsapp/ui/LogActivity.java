@@ -37,6 +37,9 @@ public class LogActivity extends RoboActivity {
     @InjectView(R.id.signUpButton)
     private Button signUpButton;
 
+    @InjectView(R.id.geocodingTest)
+    private Button geocodingTestButton;
+
     @Inject
     private AuthenticationRepository authRepo;
 
@@ -48,9 +51,20 @@ public class LogActivity extends RoboActivity {
         this.signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GetTokenAsyncTask getTokenAsyncTask = new GetTokenAsyncTask(LogActivity.this);
-                getTokenAsyncTask.execute();
+//                GetTokenAsyncTask getTokenAsyncTask = new GetTokenAsyncTask(LogActivity.this);
+//                getTokenAsyncTask.execute();
                 Ln.d("lol");
+                Intent intent = new Intent(LogActivity.this, MenuActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
+        geocodingTestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LogActivity.this, GeocodingTestActvity.class);
+                startActivity(intent);
             }
         });
     }
@@ -83,8 +97,8 @@ public class LogActivity extends RoboActivity {
 
         @Override
         protected void onSuccess(Void aVoid) throws Exception {
-            Intent intent = new Intent(LogActivity.this, MenuActivity.class);
-            startActivity(intent);
+//            Intent intent = new Intent(LogActivity.this, MenuActivity.class);
+//            startActivity(intent);
         }
 
 

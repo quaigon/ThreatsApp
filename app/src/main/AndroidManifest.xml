@@ -3,6 +3,10 @@
     package="com.quaigon.threatsapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <uses-feature android:name="android.hardware.camera"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -24,7 +28,8 @@
             android:value="com.quaigon.threatsapp.MainModule" />
 
         <activity android:name=".ui.AddThreatActivity" />
-        <activity android:name=".ui.ThreatsListActivity"></activity>
+        <activity android:name=".ui.ThreatsListActivity" />
+        <activity android:name=".ui.GeocodingTestActvity"></activity>
     </application>
 
 </manifest>

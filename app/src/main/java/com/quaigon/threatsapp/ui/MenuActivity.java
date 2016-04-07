@@ -35,7 +35,7 @@ public class MenuActivity extends RoboActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-        this.token = authRepo.loadToken();
+//        this.token = authRepo.loadToken();
 
         this.addThreatButton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -22,15 +22,48 @@
         android:layout_height="wrap_content"
         android:hint="Threat description"/>
     <EditText
-        android:id="@+id/coordsEditText"
+        android:id="@+id/streetEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Threat coordinates"/>
+        android:hint="Street"/>
+    <EditText
+        android:id="@+id/cityEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="City"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+    <ImageView
+        android:layout_weight="0.5"
+        android:id="@+id/imgView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:layout_weight="0.5"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+    <Button
+        android:id="@+id/addPhotoButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="add Photo"/>
 
     <Button
         android:id="@+id/addButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="ADD"/>
+
+            </LinearLayout>
+    </LinearLayout>
+
 
 </LinearLayout>

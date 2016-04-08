@@ -17,7 +17,12 @@
         android:text="threat description"/>
 
     <TextView
-        android:id="@+id/coords"
+        android:id="@+id/street"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Vertical: dsadas Horizontal: sdaksai"/>
+    <TextView
+        android:id="@+id/city"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Vertical: dsadas Horizontal: sdaksai"/>

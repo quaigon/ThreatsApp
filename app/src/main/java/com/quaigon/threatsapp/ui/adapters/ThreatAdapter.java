@@ -62,8 +62,8 @@ public class ThreatAdapter extends BaseAdapter {
         Threat threat = (Threat) getItem(position);
         viewHolder.typeTextView.setText(threat.getType().getThreatType());
         viewHolder.descriptionTextView.setText(threat.getDescription());
-        viewHolder.coordsTextView.setText("Horizontal: " + threat.getCoordinates().getHorizontal() + " Vertical: " + threat.getCoordinates().getVertical());
-
+        viewHolder.streetTextView.setText(threat.getCoordinates().getStreet());
+        viewHolder.cityTextView.setText(threat.getCoordinates().getCity());
         return view;
     }
 
@@ -71,12 +71,13 @@ public class ThreatAdapter extends BaseAdapter {
     static class ViewHolder {
         public TextView typeTextView;
         public TextView descriptionTextView;
-        public TextView coordsTextView;
-
+        public TextView streetTextView;
+        public TextView cityTextView;
         public ViewHolder (View convertView) {
             typeTextView = (TextView) convertView.findViewById(R.id.threatType);
             descriptionTextView = (TextView) convertView.findViewById(R.id.description);
-            coordsTextView = (TextView) convertView.findViewById(R.id.coords);
+            streetTextView = (TextView) convertView.findViewById(R.id.street);
+            cityTextView = (TextView) convertView.findViewById(R.id.city);
         }
 
 

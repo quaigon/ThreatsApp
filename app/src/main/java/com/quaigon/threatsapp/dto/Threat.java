@@ -9,6 +9,7 @@ public class Threat {
     private String description;
     private Coordinates coordinates;
 
+
     public Threat(String uuid, ThreatType type, String description, Coordinates coordinates) {
         this.uuid = uuid;
         this.type = type;
@@ -32,3 +33,5 @@ public class Threat {
         return coordinates;
     }
 }
+
+

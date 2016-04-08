@@ -51,8 +51,8 @@ public class LogActivity extends RoboActivity {
         this.signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                GetTokenAsyncTask getTokenAsyncTask = new GetTokenAsyncTask(LogActivity.this);
-//                getTokenAsyncTask.execute();
+                GetTokenAsyncTask getTokenAsyncTask = new GetTokenAsyncTask(LogActivity.this);
+                getTokenAsyncTask.execute();
                 Ln.d("lol");
                 Intent intent = new Intent(LogActivity.this, MenuActivity.class);
                 startActivity(intent);
@@ -78,11 +78,11 @@ public class LogActivity extends RoboActivity {
 
         @Override
         public Void call() throws Exception {
-            String username = usernameEditText.getText().toString();
-            String password = passwordEditText.getText().toString();
+//            String username = usernameEditText.getText().toString();
+//            String password = passwordEditText.getText().toString();
 
-//            String username = "kamilkamil";
-//            String password = "kamilkamil";
+            String username = "kamilkamil";
+            String password = "kamilkamil";
             ConnectionService connectionService = ServiceGenerator.createService(ConnectionService.class);
             Call<Token> call = connectionService.login(username, md5(password));
             Token token = call.execute().body();

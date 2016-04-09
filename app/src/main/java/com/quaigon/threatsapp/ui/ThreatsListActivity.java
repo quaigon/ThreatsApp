@@ -1,13 +1,18 @@
 package com.quaigon.threatsapp.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ListView;
 
 import com.quaigon.threatsapp.R;
 import com.quaigon.threatsapp.connection.ConnectionService;
 import com.quaigon.threatsapp.connection.ServiceGenerator;
 import com.quaigon.threatsapp.dto.Threat;
 import com.quaigon.threatsapp.ui.adapters.ThreatAdapter;
+
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +33,16 @@ public class ThreatsListActivity extends RoboListActivity {
 
         GetThreatsAsyncTask getThreatsAsyncTaskt = new GetThreatsAsyncTask(this);
         getThreatsAsyncTaskt.execute();
+    }
+
+
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        Intent intent = new Intent(ThreatsListActivity.this, ThreatActivity.class);
+        Threat threat = threatsList.get(position);
+        intent.putExtra("threat", Parcels.wrap(threat));
+        startActivity(intent);
+
     }
 
     private class GetThreatsAsyncTask extends RoboAsyncTask<List<Threat>> {
@@ -52,6 +67,4 @@ public class ThreatsListActivity extends RoboListActivity {
             setListAdapter(threatAdapter);
         }
     }
-
-
 }

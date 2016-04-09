@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
@@ -36,17 +37,17 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
-import retrofit2.http.Multipart;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 import roboguice.util.Ln;
 import roboguice.util.RoboAsyncTask;
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class AddThreatActivity extends RoboActivity {
-
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
@@ -84,6 +85,7 @@ public class AddThreatActivity extends RoboActivity {
     private String uuid = null;
 
     private File photoFile = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,24 +105,27 @@ public class AddThreatActivity extends RoboActivity {
                     e.printStackTrace();
                 }
 
-                ConnectionService connectionService = ServiceGenerator.createService(ConnectionService.class);
-                connectionService.addThreat(typeEditText.getText().toString(), descriptionEditText.getText().toString(),
+
+                RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), photoFile);
+                final MultipartBody.Part body = MultipartBody.Part.createFormData("file", photoFile.getName(), requestBody);
+                ConnectionService addPhotoService = ServiceGenerator.createService(ConnectionService.class, "multipart/form-data");
+                ConnectionService addThreatService = ServiceGenerator.createService(ConnectionService.class);
+                addThreatService.addThreat(typeEditText.getText().toString(), descriptionEditText.getText().toString(),
                         latLng.latitude + ";" + latLng.longitude, street + ";" + city, authRepo.loadToken().getToken())
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
+                        .flatMap(new Func1<Status, Observable<Status>>() {
+                            @Override
+                            public Observable<Status> call(Status status) {
+                                return addPhotoService.addImage2(status.getUuid(), body).
+                                        subscribeOn(Schedulers.newThread()).
+                                        observeOn(AndroidSchedulers.mainThread());
+                            }
+                        })
                         .subscribe(new Subscriber<Status>() {
                             @Override
                             public void onCompleted() {
-                                new AlertDialog.Builder(AddThreatActivity.this)
-                                        .setTitle("Sukces")
-                                        .setMessage("Dodano zagrozenie!")
-                                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                AddThreatActivity.this.finish();
-                                            }
-                                        })
-                                        .setIcon(android.R.drawable.ic_dialog_alert)
-                                        .show();
+
                             }
 
                             @Override
@@ -130,13 +135,46 @@ public class AddThreatActivity extends RoboActivity {
 
                             @Override
                             public void onNext(Status status) {
-                                uuid = status.getUuid();
+                                Ln.d(status.getStatus());
                             }
                         });
             }
         });
 
+        postPhotoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (null != uuid && null != photoFile) {
+//                    SendImageAsyncTask sendImageAsyncTask = new SendImageAsyncTask(AddThreatActivity.this, uuid);
+//                    sendImageAsyncTask.execute();
+                    RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), photoFile);
+                    MultipartBody.Part body = MultipartBody.Part.createFormData("file", photoFile.getName(), requestBody);
+                    ConnectionService connectionService = ServiceGenerator.createService(ConnectionService.class, "multipart/form-data");
+                    connectionService.addImage2(uuid, body)
+                            .subscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Subscriber<Status>() {
+                                @Override
+                                public void onCompleted() {
+
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+
+                                }
+
+                                @Override
+                                public void onNext(Status status) {
+                                    Ln.d(status.getUuid());
+                                }
+                            });
+                }
+            }
+        });
+
         addPhotoButton.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -156,29 +194,17 @@ public class AddThreatActivity extends RoboActivity {
                 }
             }
         });
-
-
-        postPhotoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != uuid) {
-                    SendImageAsyncTask sendImageAsyncTask = new SendImageAsyncTask(AddThreatActivity.this, uuid);
-                    sendImageAsyncTask.execute();
-                }
-            }
-        });
     }
 
-
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
 //            Bundle extras = data.getExtras();
-//            Bitmap imageBitmap = (Bitmap) extras.get("data");
-//            threatImg = imageBitmap;
-//            imageView.setImageBitmap(imageBitmap);
-//        }
-//    }
+            Bitmap imageBitmap = BitmapFactory.decodeFile(photoFile.getPath());
+            threatImg = imageBitmap;
+            imageView.setImageBitmap(imageBitmap);
+        }
+    }
 
     private LatLng getLatLangFromAddres(String address) throws IOException, JSONException {
         LatLng latLng = null;
@@ -190,6 +216,22 @@ public class AddThreatActivity extends RoboActivity {
         return latLng;
     }
 
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        return image;
+    }
 
     private class SendThreatAsyncTask extends RoboAsyncTask<Void> {
 
@@ -210,7 +252,7 @@ public class AddThreatActivity extends RoboActivity {
 
 
             ConnectionService connectionService = ServiceGenerator.createService(ConnectionService.class);
-            Call<Status> call = connectionService.addThreat2(type, descripiton, street,city, authRepo.loadToken().getToken());
+            Call<Status> call = connectionService.addThreat2(type, descripiton, street, city, authRepo.loadToken().getToken());
             Status status = call.execute().body();
             Ln.d(status);
 
@@ -233,11 +275,10 @@ public class AddThreatActivity extends RoboActivity {
         }
     }
 
-
-
     private class SendImageAsyncTask extends RoboAsyncTask<Void> {
 
         private String uuid;
+
         public SendImageAsyncTask(Context context, String uuid) {
             super(context);
             this.uuid = uuid;
@@ -263,23 +304,6 @@ public class AddThreatActivity extends RoboActivity {
         }
 
 
-    }
-
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
-        return image;
     }
 
 }

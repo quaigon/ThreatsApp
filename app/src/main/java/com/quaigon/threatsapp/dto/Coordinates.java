@@ -1,17 +1,23 @@
 package com.quaigon.threatsapp.dto;
 
-/**
- * Created by Kamil on 13.03.2016.
- */
-public class Coordinates {
-    private String vertical;
-    private String horizontal;
-    private String street;
-    private String city;
+import org.parceler.Parcel;
 
-    public Coordinates(String vertical, String horizontal) {
+@Parcel
+public class Coordinates {
+    public String vertical;
+    public String horizontal;
+    public String street;
+    public String city;
+
+
+    public Coordinates() {
+    }
+
+    public Coordinates(String vertical, String horizontal, String street, String city) {
         this.vertical = vertical;
         this.horizontal = horizontal;
+        this.street = street;
+        this.city = city;
     }
 
     public String getVertical() {

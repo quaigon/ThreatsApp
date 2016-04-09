@@ -1,11 +1,16 @@
 package com.quaigon.threatsapp.dto;
 
-/**
- * Created by Kamil on 13.03.2016.
- */
+import org.parceler.Parcel;
+
+
+@Parcel
 public class ThreatType {
-    private String uuid;
-    private String threatType;
+    public String uuid;
+    public String threatType;
+
+
+    public ThreatType() {
+    }
 
     public ThreatType(String uuid, String threatType) {
         this.uuid = uuid;

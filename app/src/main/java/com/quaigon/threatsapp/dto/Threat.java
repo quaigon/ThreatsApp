@@ -1,14 +1,18 @@
 package com.quaigon.threatsapp.dto;
 
-/**
- * Created by Kamil on 13.03.2016.
- */
-public class Threat {
-    private String uuid;
-    private ThreatType type;
-    private String description;
-    private Coordinates coordinates;
 
+import org.parceler.Parcel;
+
+@Parcel
+public class Threat {
+    public String uuid;
+    public ThreatType type;
+    public String description;
+    public Coordinates coordinates;
+
+
+    public Threat() {
+    }
 
     public Threat(String uuid, ThreatType type, String description, Coordinates coordinates) {
         this.uuid = uuid;
@@ -16,6 +20,7 @@ public class Threat {
         this.description = description;
         this.coordinates = coordinates;
     }
+
 
     public String getUuid() {
         return uuid;
@@ -32,6 +37,7 @@ public class Threat {
     public Coordinates getCoordinates() {
         return coordinates;
     }
+
 }
 
 

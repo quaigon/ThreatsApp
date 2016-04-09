@@ -54,8 +54,6 @@ public class LogActivity extends RoboActivity {
                 GetTokenAsyncTask getTokenAsyncTask = new GetTokenAsyncTask(LogActivity.this);
                 getTokenAsyncTask.execute();
                 Ln.d("lol");
-                Intent intent = new Intent(LogActivity.this, MenuActivity.class);
-                startActivity(intent);
             }
         });
 
@@ -97,8 +95,8 @@ public class LogActivity extends RoboActivity {
 
         @Override
         protected void onSuccess(Void aVoid) throws Exception {
-//            Intent intent = new Intent(LogActivity.this, MenuActivity.class);
-//            startActivity(intent);
+            Intent intent = new Intent(LogActivity.this, MenuActivity.class);
+            startActivity(intent);
         }
 
 

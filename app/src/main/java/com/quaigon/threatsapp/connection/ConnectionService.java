@@ -48,5 +48,9 @@ public interface ConnectionService {
 
     @Multipart
     @POST("/TrafficThreat/rest/addImage/")
+    Observable<Status> addImage2 (@Query("uuid") String uuid, @Part() MultipartBody.Part file);
+
+    @Multipart
+    @POST("/TrafficThreat/rest/addImage/")
     Call<Status> addImage(@Query("uuid") String uuid, @Part() MultipartBody.Part file);
 }

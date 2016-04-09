@@ -6,7 +6,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-    <uses-feature android:name="android.hardware.camera"
+    <uses-feature
+        android:name="android.hardware.camera"
         android:required="true" />
 
     <application
@@ -30,7 +31,11 @@
 
         <activity android:name=".ui.AddThreatActivity" />
         <activity android:name=".ui.ThreatsListActivity" />
-        <activity android:name=".ui.GeocodingTestActvity"></activity>
+        <activity android:name=".ui.GeocodingTestActvity" />
+        <activity
+            android:name=".ui.ThreatActivity"
+            android:label="@string/title_activity_threat"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

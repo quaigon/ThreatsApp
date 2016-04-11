@@ -22,4 +22,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Show threats"/>
+
+    <Button
+        android:id="@+id/showThreatsMap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="show threats map"/>
 </LinearLayout>

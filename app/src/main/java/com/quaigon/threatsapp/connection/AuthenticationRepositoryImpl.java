@@ -20,6 +20,7 @@ public class AuthenticationRepositoryImpl implements AuthenticationRepository {
         String token = preferences.getString("Token", null);
         String role = preferences.getString("Role", null);
 
+
         return new Token(token,role);
     }
 
@@ -30,4 +31,18 @@ public class AuthenticationRepositoryImpl implements AuthenticationRepository {
         editor.putString("Role", token.getRole());
         editor.commit();
     }
+
+    @Override
+    public void saveUserLogin(String login) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("UserLogin", login);
+        editor.commit();
+    }
+
+    @Override
+    public String loadUserLogin() {
+        return preferences.getString("UserLogin", null);
+    }
+
+
 }

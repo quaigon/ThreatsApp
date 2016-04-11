@@ -1,8 +1,5 @@
 package com.quaigon.threatsapp.ui;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -36,11 +33,9 @@ import java.util.List;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import retrofit2.Call;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 import roboguice.util.Ln;
-import roboguice.util.RoboAsyncTask;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -117,7 +112,7 @@ public class AddThreatActivity extends RoboActivity {
                         .flatMap(new Func1<Status, Observable<Status>>() {
                             @Override
                             public Observable<Status> call(Status status) {
-                                return addPhotoService.addImage2(status.getUuid(), body).
+                                return addPhotoService.addImage(status.getUuid(), body).
                                         subscribeOn(Schedulers.newThread()).
                                         observeOn(AndroidSchedulers.mainThread());
                             }
@@ -145,25 +140,32 @@ public class AddThreatActivity extends RoboActivity {
             @Override
             public void onClick(View v) {
                 if (null != uuid && null != photoFile) {
-//                    SendImageAsyncTask sendImageAsyncTask = new SendImageAsyncTask(AddThreatActivity.this, uuid);
-//                    sendImageAsyncTask.execute();
                     RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), photoFile);
                     MultipartBody.Part body = MultipartBody.Part.createFormData("file", photoFile.getName(), requestBody);
                     ConnectionService connectionService = ServiceGenerator.createService(ConnectionService.class, "multipart/form-data");
-                    connectionService.addImage2(uuid, body)
+                    connectionService.addImage(uuid, body)
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(new Subscriber<Status>() {
                                 @Override
                                 public void onCompleted() {
-
+//                                    new AlertDialog.Builder(AddThreatActivity.this)
+//                                            .setTitle("Sukces")
+//                                            .setMessage("Dodano zagrozenie!")
+//                                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+//                                                public void onClick(DialogInterface dialog, int which) {
+//                                                    AddThreatActivity.this.finish();
+//                                                }
+//                                            })
+//                                            .setIcon(android.R.drawable.ic_dialog_alert)
+//                                            .show();
+                                    Ln.d("oncompleted");
                                 }
 
                                 @Override
                                 public void onError(Throwable e) {
 
                                 }
-
                                 @Override
                                 public void onNext(Status status) {
                                     Ln.d(status.getUuid());
@@ -179,8 +181,6 @@ public class AddThreatActivity extends RoboActivity {
             public void onClick(View v) {
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-//                    File photoFile = null;
-
                     try {
                         photoFile = createImageFile();
                     } catch (IOException e) {
@@ -199,7 +199,6 @@ public class AddThreatActivity extends RoboActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-//            Bundle extras = data.getExtras();
             Bitmap imageBitmap = BitmapFactory.decodeFile(photoFile.getPath());
             threatImg = imageBitmap;
             imageView.setImageBitmap(imageBitmap);
@@ -233,77 +232,5 @@ public class AddThreatActivity extends RoboActivity {
         return image;
     }
 
-    private class SendThreatAsyncTask extends RoboAsyncTask<Void> {
-
-        private LatLng latLng;
-
-        public SendThreatAsyncTask(Context context, LatLng latLng) {
-            super(context);
-            this.latLng = latLng;
-        }
-
-        @Override
-        public Void call() throws Exception {
-
-            String type = typeEditText.getText().toString();
-            String descripiton = descriptionEditText.getText().toString();
-            String street = streetEditText.getText().toString();
-            String city = "bc;def;ghi;4324;";
-
-
-            ConnectionService connectionService = ServiceGenerator.createService(ConnectionService.class);
-            Call<Status> call = connectionService.addThreat2(type, descripiton, street, city, authRepo.loadToken().getToken());
-            Status status = call.execute().body();
-            Ln.d(status);
-
-            return null;
-        }
-
-
-        @Override
-        protected void onSuccess(Void aVoid) throws Exception {
-            new AlertDialog.Builder(context)
-                    .setTitle("Sukces")
-                    .setMessage("Dodano zagrozenie!")
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            AddThreatActivity.this.finish();
-                        }
-                    })
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
-        }
-    }
-
-    private class SendImageAsyncTask extends RoboAsyncTask<Void> {
-
-        private String uuid;
-
-        public SendImageAsyncTask(Context context, String uuid) {
-            super(context);
-            this.uuid = uuid;
-        }
-
-        @Override
-        public Void call() throws Exception {
-            File file = photoFile;
-            RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-            MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
-            RequestBody description = RequestBody.create(MediaType.parse("multipart/form-data"), uuid);
-            ConnectionService connectionService = ServiceGenerator.createService(ConnectionService.class, "multipart/form-data");
-            Call<Status> call = connectionService.addImage(uuid, body);
-            Status status = call.execute().body();
-            Ln.d(status);
-            return null;
-        }
-
-        @Override
-        protected void onSuccess(Void aVoid) throws Exception {
-            super.onSuccess(aVoid);
-            Ln.d("super");
-        }
-
-
-    }
 
 }

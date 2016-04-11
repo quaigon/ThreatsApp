@@ -1,6 +1,5 @@
 package com.quaigon.threatsapp.ui;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -14,12 +13,12 @@ import com.quaigon.threatsapp.ui.adapters.ThreatAdapter;
 
 import org.parceler.Parcels;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Call;
 import roboguice.activity.RoboListActivity;
-import roboguice.util.RoboAsyncTask;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class ThreatsListActivity extends RoboListActivity {
 
@@ -31,10 +30,31 @@ public class ThreatsListActivity extends RoboListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_threats_list);
 
-        GetThreatsAsyncTask getThreatsAsyncTaskt = new GetThreatsAsyncTask(this);
-        getThreatsAsyncTaskt.execute();
+        ConnectionService getThreatService = ServiceGenerator.createService(ConnectionService.class);
+        getThreatService.getThreats().subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<Threat>>() {
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<Threat> threats) {
+                        threatAdapter = new ThreatAdapter(threats, ThreatsListActivity.this);
+                        setListAdapter(threatAdapter);
+                        setThreatsList(threats);
+                    }
+                });
     }
 
+    public void setThreatsList(List<Threat> threatsList) {
+        this.threatsList = threatsList;
+    }
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
@@ -43,28 +63,5 @@ public class ThreatsListActivity extends RoboListActivity {
         intent.putExtra("threat", Parcels.wrap(threat));
         startActivity(intent);
 
-    }
-
-    private class GetThreatsAsyncTask extends RoboAsyncTask<List<Threat>> {
-
-        public GetThreatsAsyncTask(Context context) {
-            super(context);
-        }
-
-        @Override
-        public List<Threat> call() throws Exception {
-
-            ConnectionService connectionService = ServiceGenerator.createService(ConnectionService.class);
-            Call<List<Threat>> call = connectionService.getThreats();
-            List<Threat> threats = call.execute().body();
-            return threats;
-        }
-
-        @Override
-        protected void onSuccess(List<Threat> threats) throws Exception {
-            threatsList = threats;
-            threatAdapter = new ThreatAdapter(threats, ThreatsListActivity.this);
-            setListAdapter(threatAdapter);
-        }
     }
 }

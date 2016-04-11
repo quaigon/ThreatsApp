@@ -59,8 +59,10 @@ public class ThreatAdapter extends BaseAdapter {
         }
 
         Threat threat = (Threat) getItem(position);
-        viewHolder.streetTextView.setText(threat.getType().getThreatType());
-        viewHolder.cityTextView.setText(threat.getDescription());
+        if (null != threat) {
+            viewHolder.streetTextView.setText(threat.getType().getThreatType());
+            viewHolder.cityTextView.setText(threat.getDescription());
+        }
         return view;
     }
 

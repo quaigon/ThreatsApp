@@ -27,20 +27,29 @@
         <TextView
             android:id="@+id/threatStreet"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="1"/>
         <TextView
             android:id="@+id/threatCity"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="2"/>
         <TextView
             android:id="@+id/threatType"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="3"/>
         <TextView
             android:id="@+id/threatDescription"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="4"/>
 
+        <Button
+            android:id="@+id/threatVoteButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="vote"/>
 
     </LinearLayout>
 

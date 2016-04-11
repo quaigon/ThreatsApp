@@ -37,9 +37,6 @@ public class LogActivity extends RoboActivity {
     @InjectView(R.id.signUpButton)
     private Button signUpButton;
 
-    @InjectView(R.id.geocodingTest)
-    private Button geocodingTestButton;
-
     @Inject
     private AuthenticationRepository authRepo;
 
@@ -53,20 +50,9 @@ public class LogActivity extends RoboActivity {
             public void onClick(View v) {
                 GetTokenAsyncTask getTokenAsyncTask = new GetTokenAsyncTask(LogActivity.this);
                 getTokenAsyncTask.execute();
-                Ln.d("lol");
-            }
-        });
-
-
-        geocodingTestButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LogActivity.this, GeocodingTestActvity.class);
-                startActivity(intent);
             }
         });
     }
-
 
     public class GetTokenAsyncTask extends RoboAsyncTask<Void> {
 
@@ -85,6 +71,7 @@ public class LogActivity extends RoboActivity {
             Call<Token> call = connectionService.login(username, md5(password));
             Token token = call.execute().body();
             authRepo.saveToken(token);
+            authRepo.saveUserLogin(username);
             return null;
         }
 

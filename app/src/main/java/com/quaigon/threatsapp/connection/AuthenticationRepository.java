@@ -8,7 +8,9 @@ import com.quaigon.threatsapp.dto.Token;
 
 public interface AuthenticationRepository {
     Token loadToken ();
+    String loadUserLogin();
 
     void saveToken (Token token);
+    void saveUserLogin(String login);
 }
 

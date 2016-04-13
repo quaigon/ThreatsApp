@@ -36,40 +36,36 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-    <ImageView
-        android:layout_weight="0.5"
-        android:id="@+id/imgView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
         <LinearLayout
             android:layout_weight="0.5"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-    <Button
+            <Button
+        android:layout_weight="0.5"
         android:id="@+id/addPhotoButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="add Photo"/>
 
-    <Button
+            <Button
+        android:layout_weight="0.5"
         android:id="@+id/addButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="ADD Threat"/>
 
-            </LinearLayout>
+        </LinearLayout>
+
+        <ImageView
+            android:layout_weight="0.5"
+            android:id="@+id/imgView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </LinearLayout>
-
-    <Button
-        android:id="@+id/postPhoto"
-        android:text="sendonlyphoto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
 
 </LinearLayout>

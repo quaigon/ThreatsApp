@@ -1,5 +1,7 @@
 package com.quaigon.threatsapp.ui;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -70,9 +72,6 @@ public class AddThreatActivity extends RoboActivity {
     @InjectView(R.id.imgView)
     private ImageView imageView;
 
-    @InjectView(R.id.postPhoto)
-    private Button postPhotoButton;
-
     private Bitmap threatImg;
 
     private String mCurrentPhotoPath;
@@ -112,7 +111,7 @@ public class AddThreatActivity extends RoboActivity {
                         .flatMap(new Func1<Status, Observable<Status>>() {
                             @Override
                             public Observable<Status> call(Status status) {
-                                return addPhotoService.addImage(status.getUuid(), body).
+                                return  addPhotoService.addImage(status.getUuid(), body).
                                         subscribeOn(Schedulers.newThread()).
                                         observeOn(AndroidSchedulers.mainThread());
                             }
@@ -120,7 +119,16 @@ public class AddThreatActivity extends RoboActivity {
                         .subscribe(new Subscriber<Status>() {
                             @Override
                             public void onCompleted() {
-
+                                new AlertDialog.Builder(AddThreatActivity.this)
+                                            .setTitle("Sukces")
+                                            .setMessage("Dodano zagrozenie!")
+                                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    AddThreatActivity.this.finish();
+                                                }
+                                            })
+                                            .setIcon(android.R.drawable.ic_dialog_alert)
+                                            .show();
                             }
 
                             @Override
@@ -133,45 +141,6 @@ public class AddThreatActivity extends RoboActivity {
                                 Ln.d(status.getStatus());
                             }
                         });
-            }
-        });
-
-        postPhotoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != uuid && null != photoFile) {
-                    RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), photoFile);
-                    MultipartBody.Part body = MultipartBody.Part.createFormData("file", photoFile.getName(), requestBody);
-                    ConnectionService connectionService = ServiceGenerator.createService(ConnectionService.class, "multipart/form-data");
-                    connectionService.addImage(uuid, body)
-                            .subscribeOn(Schedulers.newThread())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Subscriber<Status>() {
-                                @Override
-                                public void onCompleted() {
-//                                    new AlertDialog.Builder(AddThreatActivity.this)
-//                                            .setTitle("Sukces")
-//                                            .setMessage("Dodano zagrozenie!")
-//                                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-//                                                public void onClick(DialogInterface dialog, int which) {
-//                                                    AddThreatActivity.this.finish();
-//                                                }
-//                                            })
-//                                            .setIcon(android.R.drawable.ic_dialog_alert)
-//                                            .show();
-                                    Ln.d("oncompleted");
-                                }
-
-                                @Override
-                                public void onError(Throwable e) {
-
-                                }
-                                @Override
-                                public void onNext(Status status) {
-                                    Ln.d(status.getUuid());
-                                }
-                            });
-                }
             }
         });
 
@@ -231,6 +200,4 @@ public class AddThreatActivity extends RoboActivity {
         mCurrentPhotoPath = "file:" + image.getAbsolutePath();
         return image;
     }
-
-
 }

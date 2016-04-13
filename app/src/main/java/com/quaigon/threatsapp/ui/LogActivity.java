@@ -62,11 +62,11 @@ public class LogActivity extends RoboActivity {
 
         @Override
         public Void call() throws Exception {
-//            String username = usernameEditText.getText().toString();
-//            String password = passwordEditText.getText().toString();
+            String username = usernameEditText.getText().toString();
+            String password = passwordEditText.getText().toString();
 
-            String username = "kamilkamil";
-            String password = "kamilkamil";
+//            String username = "kamilkamil";
+//            String password = "kamilkamil";
             ConnectionService connectionService = ServiceGenerator.createService(ConnectionService.class);
             Call<Token> call = connectionService.login(username, md5(password));
             Token token = call.execute().body();

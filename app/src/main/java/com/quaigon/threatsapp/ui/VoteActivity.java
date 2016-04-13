@@ -1,5 +1,7 @@
 package com.quaigon.threatsapp.ui;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -55,7 +57,16 @@ public class VoteActivity extends RoboActivity {
                         .subscribe(new Subscriber<Status>() {
                             @Override
                             public void onCompleted() {
-                                Ln.d("complete");
+                                new AlertDialog.Builder(VoteActivity.this)
+                                        .setTitle("Sukces")
+                                        .setMessage("Dodano glos!")
+                                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                VoteActivity.this.finish();
+                                            }
+                                        })
+                                        .setIcon(android.R.drawable.ic_dialog_alert)
+                                        .show();
                             }
 
                             @Override

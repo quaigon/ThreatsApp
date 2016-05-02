@@ -23,6 +23,7 @@ import com.quaigon.threatsapp.connection.AuthenticationRepository;
 import com.quaigon.threatsapp.connection.ConnectionService;
 import com.quaigon.threatsapp.connection.ServiceGenerator;
 import com.quaigon.threatsapp.dto.Status;
+import com.quaigon.threatsapp.utils.GeocodingUtils;
 
 import org.json.JSONException;
 
@@ -92,7 +93,7 @@ public class AddThreatActivity extends RoboActivity {
                 String street = streetEditText.getText().toString();
                 String city = cityEditText.getText().toString();
                 try {
-                    latLng = getLatLangFromAddres(street + ", " + city);
+                    latLng = GeocodingUtils.getLatLangFromAddres(street + ", " + city, AddThreatActivity.this);
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -172,16 +173,6 @@ public class AddThreatActivity extends RoboActivity {
             threatImg = imageBitmap;
             imageView.setImageBitmap(imageBitmap);
         }
-    }
-
-    private LatLng getLatLangFromAddres(String address) throws IOException, JSONException {
-        LatLng latLng = null;
-        if (null != address) {
-            Geocoder geocoder = new Geocoder(AddThreatActivity.this);
-            List<Address> addressList = geocoder.getFromLocationName(address, 1);
-            latLng = new LatLng(addressList.get(0).getLatitude(), addressList.get(0).getLongitude());
-        }
-        return latLng;
     }
 
     private File createImageFile() throws IOException {

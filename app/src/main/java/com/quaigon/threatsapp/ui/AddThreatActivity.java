@@ -12,9 +12,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.inject.Inject;
@@ -23,6 +25,7 @@ import com.quaigon.threatsapp.connection.AuthenticationRepository;
 import com.quaigon.threatsapp.connection.ConnectionService;
 import com.quaigon.threatsapp.connection.ServiceGenerator;
 import com.quaigon.threatsapp.dto.Status;
+import com.quaigon.threatsapp.dto.ThreatType;
 import com.quaigon.threatsapp.utils.GeocodingUtils;
 
 import org.json.JSONException;
@@ -30,6 +33,7 @@ import org.json.JSONException;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -40,6 +44,7 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 import roboguice.util.Ln;
 import rx.Observable;
+import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -52,8 +57,8 @@ public class AddThreatActivity extends RoboActivity {
     @Inject
     private AuthenticationRepository authRepo;
 
-    @InjectView(R.id.typeEditText)
-    private EditText typeEditText;
+//    @InjectView(R.id.typeEditText)
+//    private EditText typeEditText;
 
     @InjectView(R.id.descriptionEditText)
     private EditText descriptionEditText;
@@ -73,6 +78,9 @@ public class AddThreatActivity extends RoboActivity {
     @InjectView(R.id.imgView)
     private ImageView imageView;
 
+    @InjectView(R.id.threat_types_spinner)
+    private Spinner threatTypesSpinner;
+
     private Bitmap threatImg;
 
     private String mCurrentPhotoPath;
@@ -85,6 +93,9 @@ public class AddThreatActivity extends RoboActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_threat);
+
+
+        initSpinner();
 
         addThreatButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,7 +116,7 @@ public class AddThreatActivity extends RoboActivity {
                 final MultipartBody.Part body = MultipartBody.Part.createFormData("file", photoFile.getName(), requestBody);
                 ConnectionService addPhotoService = ServiceGenerator.createService(ConnectionService.class, "multipart/form-data");
                 ConnectionService addThreatService = ServiceGenerator.createService(ConnectionService.class);
-                addThreatService.addThreat(typeEditText.getText().toString(), descriptionEditText.getText().toString(),
+                addThreatService.addThreat(threatTypesSpinner.getSelectedItem().toString(), descriptionEditText.getText().toString(),
                         latLng.latitude + ";" + latLng.longitude, street + ";" + city, authRepo.loadToken().getToken())
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -149,6 +160,10 @@ public class AddThreatActivity extends RoboActivity {
 
             @Override
             public void onClick(View v) {
+
+
+
+
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                     try {
@@ -164,6 +179,38 @@ public class AddThreatActivity extends RoboActivity {
                 }
             }
         });
+    }
+
+
+    private void initSpinner () {
+        ConnectionService getThreatTypesService = ServiceGenerator.createService(ConnectionService.class);
+        getThreatTypesService.getThreatTypes()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<ThreatType>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<ThreatType> threatTypes) {
+                        String types [] = new String[threatTypes.size()];
+                        for (int i = 0; i < threatTypes.size(); i++) {
+                            types[i] = threatTypes.get(i).getThreatType();
+                        }
+
+                        ArrayAdapter<String> adpater = new ArrayAdapter<String>(AddThreatActivity.this, android.R.layout.simple_spinner_item, types);
+                        adpater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        threatTypesSpinner.setAdapter(adpater);
+                    }
+
+                });
     }
 
     @Override

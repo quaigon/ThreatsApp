@@ -10,10 +10,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.drive.Permission;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -25,6 +27,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.quaigon.threatsapp.R;
 import com.quaigon.threatsapp.dto.Threat;
+import com.tbruyelle.rxpermissions.RxPermissions;
 
 import org.parceler.Parcels;
 
@@ -34,13 +37,16 @@ import roboguice.activity.RoboActionBarActivity;
 import roboguice.inject.InjectView;
 import roboguice.util.Ln;
 
-public class MapsActivity extends RoboActionBarActivity implements OnMapReadyCallback {
+public class MapsActivity extends RoboActionBarActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private GoogleMap mMap;
 
     private LocationManager mLocationManager;
 
-    private List<Threat> threatList = null;
+
+    private GoogleApiClient googleApiClient;
+
+    private List<Threat> threatList;
 
     @InjectView(R.id.fab)
     private FloatingActionButton fab;
@@ -55,12 +61,22 @@ public class MapsActivity extends RoboActionBarActivity implements OnMapReadyCal
         mapFragment.getMapAsync(this);
         threatList = Parcels.unwrap(getIntent().getParcelableExtra("threats"));
 
+        if (googleApiClient == null) {
+            googleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
+            @SuppressWarnings({"MissingPermission"})
             public void onClick(View v) {
-                Location myLocation = getLastKnownLocation();
-                Ln.d(myLocation.getLatitude() + "  " + myLocation.getLongitude());
+//                Location location = LocationServices.FusedLocationApi.getLastLocation(
+//                        googleApiClient);
+                Location location = getLastKnownLocation();
+                Ln.d(location.getLatitude() + "  " + location.getLongitude());
             }
         });
     }
@@ -112,8 +128,10 @@ public class MapsActivity extends RoboActionBarActivity implements OnMapReadyCal
     private Location getLastKnownLocation() {
         mLocationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
         List<String> providers = mLocationManager.getProviders(true);
+        List<String> providers2 = mLocationManager.getAllProviders();
         Location bestLocation = null;
         for (String provider : providers) {
+
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
                 //    ActivityCompat#requestPermissions
@@ -125,6 +143,7 @@ public class MapsActivity extends RoboActionBarActivity implements OnMapReadyCal
                 return null;
             }
             Location l = mLocationManager.getLastKnownLocation(provider);
+
             if (l == null) {
                 continue;
             }
@@ -136,4 +155,36 @@ public class MapsActivity extends RoboActionBarActivity implements OnMapReadyCal
         return bestLocation;
     }
 
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        RxPermissions.getInstance(this).request(Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                .subscribe(granted -> {
+                    if (granted) {
+
+                        }
+                    });
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    protected void onStart() {
+        googleApiClient.connect();
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        googleApiClient.disconnect();
+        super.onStop();
+    }
 }

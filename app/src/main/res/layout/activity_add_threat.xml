@@ -11,11 +11,17 @@
     tools:context="com.quaigon.threatsapp.ui.AddThreatActivity">
 
 
-    <EditText
-        android:id="@+id/typeEditText"
+    <!--<EditText-->
+        <!--android:id="@+id/typeEditText"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:hint="Threat type"/>-->
+
+    <Spinner
+        android:id="@+id/threat_types_spinner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Threat type"/>
+        android:layout_height="wrap_content"></Spinner>
+
     <EditText
         android:id="@+id/descriptionEditText"
         android:layout_width="match_parent"

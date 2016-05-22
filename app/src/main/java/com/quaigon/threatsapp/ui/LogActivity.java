@@ -37,10 +37,6 @@ public class LogActivity extends RoboActivity {
     @InjectView(R.id.signUpButton)
     private Button signUpButton;
 
-    @InjectView(R.id.gotmaps)
-    private Button gotomapsButton;
-
-
     @Inject
     private AuthenticationRepository authRepo;
 
@@ -57,13 +53,6 @@ public class LogActivity extends RoboActivity {
             }
         });
 
-        gotomapsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LogActivity.this, MapsActivity.class);
-                startActivity(intent);
-            }
-        });
     }
 
     public class GetTokenAsyncTask extends RoboAsyncTask<Void> {

@@ -2,6 +2,7 @@ package com.quaigon.threatsapp.connection;
 
 import com.quaigon.threatsapp.dto.Status;
 import com.quaigon.threatsapp.dto.Threat;
+import com.quaigon.threatsapp.dto.ThreatType;
 import com.quaigon.threatsapp.dto.Token;
 
 import java.util.List;
@@ -47,5 +48,8 @@ public interface ConnectionService {
                                @Field("login") String userLogin,
                                @Field("comment") String comment,
                                @Field("token") String token);
+
+    @GET("/TrafficThreat/rest/getThreatTypes/")
+    Observable<List<ThreatType>> getThreatTypes();
 
 }
